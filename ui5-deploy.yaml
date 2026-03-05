@@ -1,0 +1,25 @@
+# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
+
+specVersion: "4.0"
+metadata:
+  name: moovi.zvlmacedoapp
+type: application
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
+  customTasks:
+    - name: deploy-to-abap
+      afterTask: generateCachebusterInfo
+      configuration:
+        target:
+          destination: MOOVI_S4
+          url: http://ndc-srvhana.opus-idc.com.br:8000
+          client: '250'
+        app:
+          name: ZVLMACEDO_APP
+          package: ZFIORIF
+          transport: S4HK908767
+        exclude:
+          - /test/

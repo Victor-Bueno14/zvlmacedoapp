@@ -1,0 +1,23 @@
+{
+  "generationParameters": {
+    "generationDate": "Thu Mar 05 2026 19:52:34 GMT+0000 (Coordinated Universal Time)",
+    "generatorPlatform": "SAP Business Application Studio",
+    "serviceType": "SAP System (ABAP On-Premise)",
+    "metadataFilename": "",
+    "serviceUrl": "http://ndc-srvhana.opus-idc.com.br:8000/sap/opu/odata/sap/ZVLMACEDO_GW_SRV",
+    "appName": "zvlmacedoapp",
+    "appTitle": "Companhias Aérea",
+    "appDescription": "List Detail Fiori Freestyle",
+    "appNamespace": "moovi",
+    "ui5Theme": "sap_horizon",
+    "ui5Version": "1.114.0",
+    "enableEslint": false,
+    "enableTypeScript": false,
+    "showMockDataInfo": true,
+    "generatorVersion": "1.20.4",
+    "template": "Basic V2",
+    "generatorName": "SAP Fiori Application Generator",
+    "entityRelatedConfig": [],
+    "launchText": "To launch the generated application, run the following from the generated application root folder:\n\n```\n    npm start\n```"
+  }
+}
