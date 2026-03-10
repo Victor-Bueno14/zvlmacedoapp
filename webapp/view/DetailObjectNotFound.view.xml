@@ -1,0 +1,12 @@
+<mvc:View
+    controllerName="moovi.zvlmacedoapp.controller.DetailObjectNotFound"
+    xmlns:mvc="sap.ui.core.mvc" displayBlock="true"
+    xmlns="sap.m">
+        <IllustratedMessage 
+                id="illustratedMss"
+                illustrationType="sap.m.IllustratedMessageType.NoSearchResults"
+                title="{i18n>notFoundTitle}"
+                description="{i18n>notFoundText}"
+                illustrationSize="Auto"
+        />
+</mvc:View>

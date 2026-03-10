@@ -1,7 +1,18 @@
-<mvc:View controllerName="moovi.zvlmacedoapp.controller.App"
+<mvc:View 
+    controllerName="moovi.zvlmacedoapp.controller.App"
+    height="100%"
     xmlns:html="http://www.w3.org/1999/xhtml"
     xmlns:mvc="sap.ui.core.mvc" displayBlock="true"
-    xmlns="sap.m">
-    <App id="app">
+    xmlns="sap.m"
+    xmlns:f="sap.f">
+    <App 
+        id="app"
+        busy="{appView>/busy}"
+        busyIndicatorDelay="{appView>/delay}">
+        <f:FlexibleColumnLayout 
+            id="layout"
+            layout="{appView>/layout}"
+            backgroundDesign="Translucent"
+        ></f:FlexibleColumnLayout>
     </App>
 </mvc:View>

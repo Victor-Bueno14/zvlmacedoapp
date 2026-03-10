@@ -96,16 +96,27 @@
         "viewType": "XML",
         "async": true,
         "viewPath": "moovi.zvlmacedoapp.view",
-        "controlAggregation": "pages",
-        "controlId": "app",
-        "clearControlAggregation": false
+        "controlAggregation": "beginColumnPages",
+        "controlId": "layout",
+        "clearControlAggregation": false,
+        "bypassed": {
+          "target": "notFound"
+        }
       },
       "routes": [
         {
           "name": "RouteList",
-          "pattern": ":?query:",
+          "pattern": "",
           "target": [
             "TargetList"
+          ]
+        },
+        {
+          "name": "RouteObject",
+          "pattern": "ScarrSet/{objectId}",
+          "target": [
+            "TargetList",
+            "TargetObject"
           ]
         }
       ],
@@ -115,9 +126,27 @@
           "transition": "slide",
           "clearControlAggregation": false,
           "viewId": "List",
-          "viewName": "List"
-        }
-      }
+          "viewName": "List",
+          "viewLevel": 1
+        },
+        "TargetObject": {
+          "viewId": "detail",
+          "viewName": "Detail",
+          "viewLevel": 1,
+          "controlAggregation": "midColumnPages"
+        },
+        "TargetDetailNotFound": {
+        "viewId": "detailObjectNotFound",
+        "viewName": "DetailObjectNotFound",
+        "controlAggregation": "midColumnPages",
+        "clearControlAggregation": true,
+        "controlId": "layout"
+       },
+       "notFound": {
+         "viewId": "notFound",
+         "viewName": "NotFound"
+       }
+     }
     },
     "rootView": {
       "viewName": "moovi.zvlmacedoapp.view.App",
