@@ -51,12 +51,12 @@ sap.ui.define([
         },
 
         onSearch: function (oEvent) {
-            if (oEvent.getParameter().refreshButtonPressed) {
+            if (oEvent.getParameters().refreshButtonPressed) {
                 this.onRefresh();
                 return;
             };
 
-            const sQuery = oEvent.getPramaeter("query");
+            const sQuery = oEvent.getParameter("query");
 
             if (sQuery) {
                 this._oListFilterState.aSearch = [new Filter("Carrname", FilterOperator.Contains, sQuery)]
@@ -189,6 +189,117 @@ sap.ui.define([
             const oViewModel = this.getModel("listView");
             oViewModel.setProperty("/isFilterBarVisible", (this._oListFilterState.aFilter.length > 0));
             oViewModel.setProperty("/filterBarLabel", this.getResourceBundle().getText("listFilterBarText", [sFilterBarText]));
+        },
+
+        onBtnCreatePress: function (oEvent){
+            this._initNewCompany();
+
+            if (!this.oDialogEditCompany) {
+                this.oDialogEditCompany = Fragment.load({
+                    id: this.getView().byId(),
+                    name: "moovi.zvlmacedoapp.view.EditCompanyDialog",
+                    controller: this
+                }).then(function (oDialog) {
+                    this.getView().addDependent(oDialog);
+                    oDialog.addStyleClass(this.getOwnerComponent().getContentDensityClass());
+                    this.oDialogEditCompany = oDialog;
+                    this.oDialogEditCompany.open();
+                }.bind(this));
+            } else {
+                this.oDialogEditCompany.open();
+            }
+        },
+
+        _initNewCompany: function () {
+            const oEditModel = this.getView().getModel("editCompanyModel");
+            oEditModel.setProperty("/isNew", true);
+
+            const oModel = this.getView().getModel();
+
+            oModel.setDeferredGroups(["creategroupId"]);
+
+            oModel.setChangeGroups({
+                "ScarrSet": {
+                    groupId: "creategroupId",
+                    changeSetId: "ID"
+                }
+            });
+
+            const oContext = oModel.createEntry("/ScarrSet", {
+                groupId: "creategroupId",
+                properties: {}
+            });
+
+            this.getView().bindElement(oContext.getPath());
+        },
+
+        onSaveCompanyButtonPress: function (oEvent) {
+            const oModel = this.getView().getModel();
+
+            oModel.submitChanges({
+                success: this.handleSucessSave.bind(this),
+                error: this.handleSaveError.bind(this)
+            });
+        },
+
+        onCancelNewCompany: function (oEvent) {
+            const oModel = this.getView().getModel();
+
+            oModel.resetChanges();
+
+            this.oDialogEditCompany.close();
+        },
+
+        handleSucessSave: function (oRes, oData) {
+            const oModel = this.getView().getModel();
+
+            if(oRes.__batchResponses) {
+                if(oRes.__batchResponses[0].response) {
+                    const iStatus = parseInt(oRes.__batchResponses.response.statusCode)
+
+                    if (iStatus >= 400) {
+                        const oResponseBody = JSON.parse(oRes.__batchResponses[0].response.body);
+
+                        oModel.resetChanges();
+
+                        oModel.refresh();
+                    } else {
+                        MessageToast.show("Salvo com sucesso!");
+
+                        this.oDialogEditCompany.close();
+                    };
+                } else if (oRes.__batchResponses[0].__changeResponses) {
+                    const aChangeRes = oRes.__batchResponses[0].__changeResponses;
+
+                    const iStatus = parseInt(aChangeRes[0].statusCode);
+
+                    if (iStatus >= 400) {
+                        MessageBox.alert("Erro ao salvar!");
+                        
+                        oModel.resetChanges();
+
+                        oModel.refresh();
+                    } else {
+                        MessageToast.show("Salvo com sucesso!");
+
+                        this.oDialogEditCompany.close();
+                    }
+                }
+            } else {
+                MessageToast.show("Salvo com sucesso!");
+
+                this.oDialogEditCompany.close();
+            }
+        },
+
+        handleSaveError: function (oError) {
+            if (oError){
+                if (oError.responseText) {
+                    const oErrorMessage = JSON.parse(oError.responseText);
+
+                    MessageBox.alert(oErrorMessage.error.message.value);
+                }
+            }
         }
     });
 });

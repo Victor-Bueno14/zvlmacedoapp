@@ -80,7 +80,16 @@
       "": {
         "dataSource": "mainService",
         "preload": true,
-        "settings": {}
+        "settings": {
+          "defaultOperationMode": "Server",
+          "defaultBindingMode": "TwoWay",
+          "useBatch": true,
+          "defaultUpdateMethod": "PUT"
+        }
+      },
+      "editCompanyModel": {
+        "type": "sap.ui.model.json.JSONModel",
+        "uri": "/model/editCompany.json"
       }
     },
     "resources": {
@@ -133,7 +142,8 @@
           "viewId": "detail",
           "viewName": "Detail",
           "viewLevel": 1,
-          "controlAggregation": "midColumnPages"
+          "controlAggregation": "midColumnPages",
+          "clearControlAggregation": true
         },
         "TargetDetailNotFound": {
         "viewId": "detailObjectNotFound",

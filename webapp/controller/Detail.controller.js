@@ -90,31 +90,31 @@ sap.ui.define([
         },
 
         _onBindingChange: function () {
-            const oView = this.getView(),
-                  oElementBinding = oView.getElementBinding();
-            
+            var oView = this.getView(),
+                oElementBinding = oView.getElementBinding();
+
+            // No data for the binding
             if (!oElementBinding.getBoundContext()) {
                 this.getRouter().getTargets().display("TargetDetailNotFound");
-                this.getOwnerComponent().oListSelector.clearMasterListSelection();
+                // if object could not be found, the selection in the list
+                // does not make sense anymore.
+                this.getOwnerComponent().oListSelector.clearListListSelection();
                 return;
             }
 
-            const sPath = oElementBinding.getPath(),
-                  oResourceBundle = this.getResourceBundle(),
-                  oObject = oView.getModel().getObject(sPath),
-                  sObjectId = oObject.Carrid,
-                  sObjectName = oObject.Carrname,
-                  oViewModel = this.getModel("detailView");
+            var sPath = oElementBinding.getPath(),
+                oResourceBundle = this.getResourceBundle(),
+                oObject = oView.getModel().getObject(sPath),
+                sObjectId = oObject.Carrid,
+                sObjectName = oObject.Carrname,
+                oViewModel = this.getModel("detailView");
 
             this.getOwnerComponent().oListSelector.selectAListItem(sPath);
 
             oViewModel.setProperty("/shareSendEmailSubject",
-                oResourceBundle.getText("shareSendEmailObjectSubject", [sObjectId])
-            );
-
+                oResourceBundle.getText("shareSendEmailObjectSubject", [sObjectId]));
             oViewModel.setProperty("/shareSendEmailMessage",
-                oResourceBundle.getText("shareSendEmailObjectMessage", [sObjectName, sObjectId, location.href])
-            );
+                oResourceBundle.getText("shareSendEmailObjectMessage", [sObjectName, sObjectId, location.href]));
         },
 
         _onMetadataLoaded: function () {
@@ -149,6 +149,133 @@ sap.ui.define([
             } else {
                 this.getModel("appView").setProperty("/layout", this.getModel("appView").getProperty("/previousLayout"));
             };            
+        },
+
+        onEditCompanyBtnPress: function () {
+            const oEditModel = this.getView().getModel("editCompanyModel");
+            
+            oEditModel.setProperty("/isNew", false);
+
+            if(!this.oDialogEditCompany) {
+                this.oDialogEditCompany = Fragment.load({
+                    id: this.getView().getId(),
+                    name: "moovi.zvlmacedoapp.view.EditCompanyDialog",
+                    controller: this
+                }).then(function (oDialog) {
+                    this.getView().addDependent(oDialog);
+                    oDialog.addStyleClass(this.getOwnerComponent().getContentDensityClass());
+                    this.oDialogEditCompany = oDialog;
+                    this.oDialogEditCompany.open()
+                }.bind(this));
+            } else {
+                this.oDialogEditCompany.open();
+            };
+        },
+
+        onSaveCompanyButtonPress: function (oEvent) {
+            const oModel = this.getView().getModel();
+
+            oModel.submitChanges({
+                success: this.handleSuccessSave.bind(this),
+                error: this.handleSaveError.bind(this)
+            });
+        },
+
+        onCancelNewCompany: function (oEvent) {
+            const oModel = this.getView().getModel();
+            
+            oModel.resetChanges();
+
+            this.oDialogEditCompany.close();
+        },
+
+        onBtnDeletePress: function (oEvent) {
+            const oModel = this.getView().getModel(),
+                  oContext = this.getView().getBindingContext(),
+                  that = this;
+
+            MessageBox.warning(
+                "O registro será excluído! Deseja continuar?",
+                {
+                    actions: [MessageBox.Action.OK, MessageBox.Action.CANCEL],
+                    onClose: function (sAction) {
+                        if(sAction == MessageBox.Action.OK) {
+                            oModel.remove(oContext.getPath(), {
+                                success: that.handleSuccessDelete.bind(that),
+                                error: that.handleErrorDelete.bind(that)
+                            });
+                        };
+                    }
+                }
+            );
+        },
+
+        handleSuccessSave: function (oRes, oData) {
+            const oModel =  this.getView().getModel();
+
+            if(oRes.__batchResponses) {
+                if(oRes.__batchResponses[0].response) {
+                    const iStatus = parseInt(oRes.__batchResponses.response.statusCode)
+
+                    if (iStatus >= 400) {
+                        const oResponseBody = JSON.parse(oRes.__batchResponses[0].response.body);
+
+                        oModel.resetChanges();
+
+                        oModel.refresh();
+                    } else {
+                        MessageToast.show("Salvo com sucesso!");
+
+                        this.oDialogEditCompany.close();
+                    };
+                } else if (oRes.__batchResponses[0].__changeResponses) {
+                    const aChangeRes = oRes.__batchResponses[0].__changeResponses;
+
+                    const iStatus = parseInt(aChangeRes[0].statusCode);
+
+                    if (iStatus >= 400) {
+                        MessageBox.alert("Erro ao salvar!");
+                        
+                        oModel.resetChanges();
+
+                        oModel.refresh();
+                    } else {
+                        MessageToast.show("Salvo com sucesso!");
+
+                        this.oDialogEditCompany.close();
+                    }
+                }
+            } else {
+                MessageToast.show("Salvo com sucesso!");
+
+                this.oDialogEditCompany.close();
+            };
+        },
+
+        handleSaveError: function (oError) {
+            if (oError) {
+                if (oError.responseText) {
+                    const oErrorMessage = JSON.parse(oError.responseText);
+
+                    MessageBox.alert(oErrorMessage.error.message.value);
+                };
+            };
+        },
+
+        handleSuccessDelete: function (oRes) {
+            MessageToast.show("Registro excluído com sucesso!");
+
+            this.oDialogEditCompany.close();
+        },
+        
+        handleErrorDelete: function (oError) {
+            if (oError) {
+                if (oError.responseText) {
+                    const oErrorMessage = JSON.parse(oError.responseText);
+                    
+                    MessageBox.alert(oErrorMessage.error.message.value);
+                };
+            };
         }
-    })
-})
+    });
+});

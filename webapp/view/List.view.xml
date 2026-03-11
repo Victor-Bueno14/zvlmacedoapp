@@ -52,6 +52,12 @@
                         </SearchField>
                         <ToolbarSpacer/>
                         <Button
+                            id="newCompanyBtn"
+                            text="{i18n>btn_new_txt}"
+                            press=".onBtnCreatePress"
+                            icon="sap-icon://create"
+                            type="Transparent"/>
+                        <Button
                             id="sortButton"
                             press=".onOpenViewSettings" 
                             icon="sap-icon://sort" 
