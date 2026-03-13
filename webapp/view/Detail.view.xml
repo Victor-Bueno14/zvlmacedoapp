@@ -31,7 +31,13 @@
                             text="{detailView>/lineItemListTitle}"
                             titleStyle="H3"
                             level="H3"/>
-                         <ToolbarSpacer />                       
+                         <ToolbarSpacer />     
+                         <Button 
+                            id="createButton"
+                            icon="sap-icon://create"
+                            text="{i18n>btn_new_txt}"
+                            press=".onBtnCreatePress" />
+
                     </Toolbar>
                 </headerToolbar>
                 <columns>
@@ -46,8 +52,8 @@
                     </Column>
                 </columns>
                 <items>
-                    <ColumnListItem  type="Navigation"
-                                        press=".onListItemPressed">
+                    <ColumnListItem type="Navigation"
+                                    press=".onListItemPressed">
                         <cells>
                             <ObjectIdentifier
                                 title="{Cityfrom}"

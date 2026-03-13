@@ -17,7 +17,7 @@
                 columnsL="1" columnsM="1"
                 >
                 <f:content>
-                    <Label text="{i18n>CompanyIdColon}" visible="{editCompanyModel>/isNew}"/>
+                    <Label text="{i18n>CompanyIDColon}" visible="{editCompanyModel>/isNew}"/>
                     <Input type="Text" visible="{editCompanyModel>/isNew}" value="{Carrid}"/>
 
                     <Label text="{i18n>formCompanyName}"/>

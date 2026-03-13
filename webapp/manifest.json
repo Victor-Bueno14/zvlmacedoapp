@@ -90,6 +90,10 @@
       "editCompanyModel": {
         "type": "sap.ui.model.json.JSONModel",
         "uri": "/model/editCompany.json"
+      },
+      "editFlightModel": {
+        "type": "sap.ui.model.json.JSONModel",
+        "uri": "/model/editFlight.json"
       }
     },
     "resources": {
@@ -127,6 +131,14 @@
             "TargetList",
             "TargetObject"
           ]
+        },
+        {
+          "name": "RouteFlight",
+          "pattern": "SpfliSet/{Carrid}/{Connid}",
+          "target": [
+            "TargetList",
+            "TargetFlight"
+          ]
         }
       ],
       "targets": {
@@ -136,14 +148,16 @@
           "clearControlAggregation": false,
           "viewId": "List",
           "viewName": "List",
-          "viewLevel": 1
+          "viewLevel": 1,
+          "controlId": "layout"
         },
         "TargetObject": {
           "viewId": "detail",
           "viewName": "Detail",
           "viewLevel": 1,
           "controlAggregation": "midColumnPages",
-          "clearControlAggregation": true
+          "clearControlAggregation": true,
+          "controlId": "layout"
         },
         "TargetDetailNotFound": {
         "viewId": "detailObjectNotFound",
@@ -155,6 +169,14 @@
        "notFound": {
          "viewId": "notFound",
          "viewName": "NotFound"
+       },
+       "TargetFlight": {
+        "viewId": "flightDetail",
+        "viewName": "FlightDetail",
+        "viewLevel": 1,
+        "controlAggregation": "midColumnPages",
+        "clearControlAggregation": true,
+        "controlId": "layout"
        }
      }
     },

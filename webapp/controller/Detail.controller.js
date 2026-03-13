@@ -276,6 +276,28 @@ sap.ui.define([
                     MessageBox.alert(oErrorMessage.error.message.value);
                 };
             };
+        },
+
+        onListItemPressed: function (oEvent) {
+            const oItem = oEvent.getSource();
+            
+            const oCtx  = oItem.getBindingContext();
+
+            this.getRouter().navTo("RouteFlight", {
+                Carrid: oCtx.getProperty("Carrid"),
+                Connid: oCtx.getProperty("Connid")
+            });
+        },
+
+        onBtnCreatePress: function (oEvent) {
+            const oView = this.getView();
+
+            const oCtx = oView.getBindingContext();
+
+            this.getRouter().navTo("RouteFlight", {
+                Carrid: oCtx.getProperty("Carrid"),
+                Connid: "New"
+            });
         }
     });
 });
